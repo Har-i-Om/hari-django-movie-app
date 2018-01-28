@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+    <body>
+
+        <form action="" name="search">
+        	<input type="text" autocomplete="on" name="query"/>
+            <input type="submit" />
+        </form>
+        {% for movie in search_result %}
+        	<p>{{movie.fields.Name}}</p>
+            <img src="{{movie.fields.Pictures.0.url}}" alt="" />
+        {% endfor %}
+    </body>
+
+</html>
