@@ -23,4 +23,7 @@ def create(request):
     AT.insert(data)
     return redirect('/')
 
+def edit(request):
+    return redirect('/')
+
 AT = Airtable(os.environ.get('AIRTABLE_MOVIESTABLE_BASE_ID'), 'Movies', api_key=os.environ.get('AIRTABLE_API_KEY'))
