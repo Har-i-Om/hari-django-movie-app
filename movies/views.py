@@ -37,4 +37,9 @@ def edit(request, movie_id):
 
     return redirect('/')
 
+def delete(request, movie_id):
+    AT.delete(movie_id)
+    return redirect('/')
+
+
 AT = Airtable(os.environ.get('AIRTABLE_MOVIESTABLE_BASE_ID'), 'Movies', api_key=os.environ.get('AIRTABLE_API_KEY'))
