@@ -20,8 +20,14 @@ def create(request):
             'Notes': request.POST.get('notes')
 
         }
-    AT.insert(data)
+    response = AT.insert(data)
+
+    #notify on adding movie
+    messages.success(request,'Movie added: {}'.format(response['fields'].get('Name')))
+
     return redirect('/')
+
+
 
 def edit(request, movie_id):
     if request.method == 'POST' :
@@ -33,12 +39,17 @@ def edit(request, movie_id):
 
         }
 
-    AT.update(movie_id, data)
-
+    response=AT.update(movie_id, data)
+    #notify on update
+    messages.success(request,'Movie updated: {}'.format(response['fields'].get('Name')))
     return redirect('/')
 
 def delete(request, movie_id):
+    movie_deleted = AT.get(movie_id)['fields'].get('Name')
     AT.delete(movie_id)
+    messages.warning(request, 'Movie deleted: {}'.format(movie_deleted))
+    #notify on delete
+
     return redirect('/')
 
 
