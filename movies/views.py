@@ -15,15 +15,18 @@ def create(request):
     if request.method == 'POST' :
         data={
             'Name': request.POST.get('name'),
-            'Pictures': [{'url': request.POST.get('url')}],
+            'Pictures': [{'url': request.POST.get('url') or 'http://www.gladessheriff.org/media/images/most%20wanted/No%20image%20available.jpg'}],
             'Rating': int(request.POST.get('rating')),
             'Notes': request.POST.get('notes')
 
         }
-    response = AT.insert(data)
+        try:
+            response = AT.insert(data)
 
-    #notify on adding movie
-    messages.success(request,'Movie added: {}'.format(response['fields'].get('Name')))
+            #notify on adding movie
+            messages.success(request,'Movie added: {}'.format(response['fields'].get('Name')))
+        except Exception as e:
+            messages.warning(request, 'Got an error while adding the movie: {}'.format(e))
 
     return redirect('/')
 
@@ -33,22 +36,27 @@ def edit(request, movie_id):
     if request.method == 'POST' :
         data={
             'Name': request.POST.get('name'),
-            'Pictures': [{'url': request.POST.get('url')}],
+            'Pictures': [{'url': request.POST.get('url') or 'http://www.gladessheriff.org/media/images/most%20wanted/No%20image%20available.jpg'}],
             'Rating': int(request.POST.get('rating')),
             'Notes': request.POST.get('notes')
 
         }
+        try:
+            response=AT.update(movie_id, data)
+            #notify on update
+            messages.success(request,'Movie updated: {}'.format(response['fields'].get('Name')))
+        except Exception as e:
+            messages.warning(request, 'Got an error while updating the movie: {}'.format(e))
 
-    response=AT.update(movie_id, data)
-    #notify on update
-    messages.success(request,'Movie updated: {}'.format(response['fields'].get('Name')))
     return redirect('/')
 
 def delete(request, movie_id):
-    movie_deleted = AT.get(movie_id)['fields'].get('Name')
-    AT.delete(movie_id)
-    messages.warning(request, 'Movie deleted: {}'.format(movie_deleted))
-    #notify on delete
+    try:
+        movie_deleted = AT.get(movie_id)['fields'].get('Name')
+        AT.delete(movie_id)
+        messages.warning(request, 'Movie deleted: {}'.format(movie_deleted))  #notify on delete
+    except Exception as e:
+        messages.warning(request, 'Got an error: {}'.format(e))
 
     return redirect('/')
 
